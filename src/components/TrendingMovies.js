@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 20,
-        marginVertical: 20,
+        marginBottom: 20,
         marginHorizontal: 10
     },
     carousel: {

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 
 var { width, height } = Dimensions.get('window')
 
-const MovieList = ({ title, data }) => {
+const MovieList = ({ title, data, hideSeeAll }) => {
     let movieName = 'Hello world and my name is Nghia, by the way.'
 
     const navigation = useNavigation()
@@ -14,9 +14,9 @@ const MovieList = ({ title, data }) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>{title}</Text>
-                <TouchableOpacity>
+                {!hideSeeAll && <TouchableOpacity>
                     <Text style={styles.btn}>See All</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
             <ScrollView
                 horizontal
@@ -26,7 +26,7 @@ const MovieList = ({ title, data }) => {
                     return (
                         <TouchableWithoutFeedback
                             key={index}
-                            onPress={() => navigation.navigate('Movie', item)}>
+                            onPress={() => navigation.push('Movie', item)}>
                             <View>
                                 <Image
                                     source={require('../../assets/images/moviePoster2.png')}
