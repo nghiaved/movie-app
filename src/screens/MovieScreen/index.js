@@ -7,6 +7,7 @@ import { HeartIcon } from 'react-native-heroicons/solid'
 import { LinearGradient } from 'expo-linear-gradient'
 import Cast from '../../components/Cast'
 import MovieList from '../../components/MovieList'
+import Loading from '../../components/Loading'
 import styles from './styles'
 import { theme } from '../../themes'
 
@@ -16,6 +17,7 @@ const MovieScreen = () => {
     const [isFavourite, toggleFavourite] = useState(false)
     const [cast, setCast] = useState([1, 2, 3, 4, 5])
     const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+    const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
     useEffect(() => {
 
@@ -33,30 +35,34 @@ const MovieScreen = () => {
                     <HeartIcon size={35} color={isFavourite ? theme.text : 'white'} />
                 </TouchableOpacity>
             </SafeAreaView>
-            <ScrollView>
-                <View>
-                    <Image
-                        source={require('../../../assets/images/moviePoster2.png')}
-                        style={styles.img} />
-                    <LinearGradient
-                        colors={['transparent', 'rgba(23, 23, 23, 0.8)', 'rgba(23, 23, 23, 1)']}
-                        style={styles.linear}
-                        start={{ x: 0.5, y: 0 }}
-                        end={{ x: 0.5, y: 1 }} />
-                </View>
-                <View style={styles.content}>
-                    <Text style={styles.name}>{movieName}</Text>
-                    <Text style={styles.intro}>Release • 2020 • 170 min</Text>
-                    <Text style={styles.intro}>Action • Thril • Comedy</Text>
-                    <Text style={styles.desc}>
-                        FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10932:19)
-                        at FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:5900:18)
-                        at FlowParserMixin.parseSubscripts (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10903:19)
-                    </Text>
-                    <Cast cast={cast} navigation={navigation} />
-                    <MovieList title='Similar Movies' hideSeeAll={true} data={similarMovies} />
-                </View>
-            </ScrollView>
+            {loading ? (
+                <Loading />
+            ) : (
+                <ScrollView>
+                    <View>
+                        <Image
+                            source={require('../../../assets/images/moviePoster2.png')}
+                            style={styles.img} />
+                        <LinearGradient
+                            colors={['transparent', 'rgba(23, 23, 23, 0.8)', 'rgba(23, 23, 23, 1)']}
+                            style={styles.linear}
+                            start={{ x: 0.5, y: 0 }}
+                            end={{ x: 0.5, y: 1 }} />
+                    </View>
+                    <View style={styles.content}>
+                        <Text style={styles.name}>{movieName}</Text>
+                        <Text style={styles.intro}>Release • 2020 • 170 min</Text>
+                        <Text style={styles.intro}>Action • Thril • Comedy</Text>
+                        <Text style={styles.desc}>
+                            FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10932:19)
+                            at FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:5900:18)
+                            at FlowParserMixin.parseSubscripts (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10903:19)
+                        </Text>
+                        <Cast cast={cast} navigation={navigation} />
+                        <MovieList title='Similar Movies' hideSeeAll={true} data={similarMovies} />
+                    </View>
+                </ScrollView>
+            )}
         </View>
     )
 }
