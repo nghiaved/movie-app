@@ -10,18 +10,41 @@ import MovieList from '../../components/MovieList'
 import Loading from '../../components/Loading'
 import styles from './styles'
 import { theme } from '../../themes'
+import { fallbackMoviePoster, fetchMovieCredits, fetchMovieDetails, fetchSimilarMovies, image500 } from '../../api/moviedb'
 
 const MovieScreen = () => {
-    let movieName = 'Hello world and my name is Nghia, by the way.'
     const { params: item } = useRoute()
     const [isFavourite, toggleFavourite] = useState(false)
-    const [cast, setCast] = useState([1, 2, 3, 4, 5])
-    const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+    const [cast, setCast] = useState([])
+    const [similarMovies, setSimilarMovies] = useState([])
     const [loading, setLoading] = useState(false)
+    const [movie, setMovie] = useState({})
     const navigation = useNavigation()
-    useEffect(() => {
 
+    useEffect(() => {
+        setLoading(true)
+        getMovieDetails(item.id)
+        getMovieCredits(item.id)
+        getSimilarMovies(item.id)
     }, [item])
+
+    const getMovieDetails = async (id) => {
+        const data = await fetchMovieDetails(id)
+        if (data) setMovie(data)
+        setLoading(false)
+    }
+
+    const getMovieCredits = async (id) => {
+        const data = await fetchMovieCredits(id)
+        if (data && data.cast) setCast(data.cast)
+        setLoading(false)
+    }
+
+    const getSimilarMovies = async (id) => {
+        const data = await fetchSimilarMovies(id)
+        if (data && data.results) setSimilarMovies(data.results)
+        setLoading(false)
+    }
 
     return (
         <View style={styles.container}>
@@ -41,7 +64,8 @@ const MovieScreen = () => {
                 <ScrollView>
                     <View>
                         <Image
-                            source={require('../../../assets/images/moviePoster2.png')}
+                            // source={require('../../../assets/images/moviePoster2.png')}
+                            source={{ uri: image500(movie?.poster_path) || fallbackMoviePoster }}
                             style={styles.img} />
                         <LinearGradient
                             colors={['transparent', 'rgba(23, 23, 23, 0.8)', 'rgba(23, 23, 23, 1)']}
@@ -50,13 +74,20 @@ const MovieScreen = () => {
                             end={{ x: 0.5, y: 1 }} />
                     </View>
                     <View style={styles.content}>
-                        <Text style={styles.name}>{movieName}</Text>
-                        <Text style={styles.intro}>Release • 2020 • 170 min</Text>
-                        <Text style={styles.intro}>Action • Thril • Comedy</Text>
+                        <Text style={styles.name}>{movie?.title}</Text>
+                        {movie?.id ? (
+                            <Text style={styles.intro}>{movie?.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min</Text>
+                        ) : null}
+                        <Text style={styles.intro}>
+                            {movie?.genres?.map((genre, index) => {
+                                let showDot = index + 1 != movie.genres.length
+                                return (
+                                    <Text key={index}>{genre?.name} {showDot ? '•' : null} </Text>
+                                )
+                            })}
+                        </Text>
                         <Text style={styles.desc}>
-                            FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10932:19)
-                            at FlowParserMixin.parseSubscript (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:5900:18)
-                            at FlowParserMixin.parseSubscripts (D:\App\Expo\movie\node_modules\@babel\parser\lib\index.js:10903:19)
+                            {movie?.overview}
                         </Text>
                         <Cast cast={cast} navigation={navigation} />
                         <MovieList title='Similar Movies' hideSeeAll={true} data={similarMovies} />
