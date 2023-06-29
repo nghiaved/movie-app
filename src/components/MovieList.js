@@ -2,6 +2,7 @@ import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, Touc
 import React from 'react'
 import { theme } from '../themes'
 import { useNavigation } from '@react-navigation/native'
+import { fallbackMoviePoster, image185 } from '../api/moviedb'
 
 var { width, height } = Dimensions.get('window')
 
@@ -29,10 +30,11 @@ const MovieList = ({ title, data, hideSeeAll }) => {
                             onPress={() => navigation.push('Movie', item)}>
                             <View>
                                 <Image
-                                    source={require('../../assets/images/moviePoster2.png')}
+                                    // source={require('../../assets/images/moviePoster2.png')}
+                                    source={{ uri: image185(item.poster_path) || fallbackMoviePoster }}
                                     style={styles.img} />
                                 <Text style={styles.name}>
-                                    {movieName.length > 14 ? movieName.slice(0, 14) + '...' : movieName}
+                                    {item.title.length > 14 ? item.title.slice(0, 14) + '...' : item.title}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
